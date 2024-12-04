@@ -15,6 +15,7 @@ public class Day04 : BaseDay
     {
         var answer = "TODO";
 
+        string word = "XMAS";
         int wordCount = 0;
 
         var grid = GetGrid();
@@ -26,11 +27,11 @@ public class Day04 : BaseDay
         {
             for (int col = 0; col < colCount; col++)
             {
-                if (grid[row, col] == Word[0])
+                if (grid[row, col] == word[0])
                 {
                     foreach (var direction in Directions)
                     {
-                        if (CheckWord(grid, row, col, direction))
+                        if (CheckWord(word, grid, row, col, direction))
                         {
                             wordCount++;
                         }
@@ -49,20 +50,54 @@ public class Day04 : BaseDay
     {
         var answer = "TODO";
 
+        // NOTE: specialised to find XMAS, but MAS in an X shape, i.e.,
+        // M . S
+        // . A .
+        // M . S
+
+        int wordCount = 0;
+        
+        var grid = GetGrid();
+
+        int rowCount = grid.GetLength(0);
+        int colCount = grid.GetLength(1);
+
+        // NOTE: As we are searching for the middle letter, we do not care for the edges/boundary.
+        for (int row = 1; row < rowCount - 1; row++)
+        {
+            for (int col = 1; col < colCount - 1; col++)
+            {
+                if (grid[row, col] is 'A')
+                {
+                    char ne = grid[row - 1, col + 1];
+                    char se = grid[row + 1, col + 1];
+                    char nw = grid[row - 1, col - 1];
+                    char sw = grid[row + 1, col - 1];
+                    
+                    if (((ne is 'M' && sw is 'S') || (ne is 'S' && sw is 'M')) && ((nw is 'M' && se is 'S') || (nw is 'S' && se is 'M')))
+                    {
+                        wordCount++;
+                    }
+                }
+            }
+        }
+
+        answer = wordCount.ToString();
+
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 
-    private static bool CheckWord(char[,] grid, int row, int col, (int Row, int Col) direction)
+    private static bool CheckWord(string word, char[,] grid, int row, int col, (int Row, int Col) direction)
     {
         int rowCount = grid.GetLength(0);
         int colCount = grid.GetLength(1);
 
-        for (int i = 0; i < Word.Length; i++)
+        for (int i = 0; i < word.Length; i++)
         {
             int checkRow = row + i * direction.Row;
             int checkCol = col + i * direction.Col;
 
-            if (checkRow < 0 || checkRow >= rowCount || checkCol < 0 || checkCol >= colCount || grid[checkRow, checkCol] != Word[i])
+            if (checkRow < 0 || checkRow >= rowCount || checkCol < 0 || checkCol >= colCount || grid[checkRow, checkCol] != word[i])
             {
                 return false;
             }
@@ -82,8 +117,6 @@ public class Day04 : BaseDay
         (0, -1),
         (-1, -1),
     ];
-
-    private static string Word => "XMAS";
 
     private char[,] GetGrid()
     {
