@@ -1,6 +1,6 @@
 ﻿using AoCHelper;
 
-namespace AdventOfCode2024.Console.Solutions;
+namespace AdventOfCode2024.Solutions;
 
 public class Day01 : BaseDay
 {

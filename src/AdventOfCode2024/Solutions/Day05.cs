@@ -1,12 +1,12 @@
-﻿using AoCHelper;
+using AoCHelper;
 
-namespace AdventOfCode2024.Console.Solutions;
+namespace AdventOfCode2024.Solutions;
 
-public class Day00 : BaseDay
+public class Day05 : BaseDay
 {
     private readonly string _input;
 
-    public Day00()
+    public Day05()
     {
         _input = File.ReadAllText(InputFilePath);
     }
@@ -14,11 +14,11 @@ public class Day00 : BaseDay
     public override ValueTask<string> Solve_1()
     {
         var answer = string.Empty;
-        
+
         // SOLVE.
-        
+
         answer = "TODO";
-                
+
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 

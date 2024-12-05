@@ -1,6 +1,6 @@
 ﻿using AoCHelper;
 
-namespace AdventOfCode2024.Console.Solutions;
+namespace AdventOfCode2024.Solutions;
 
 public class Day04 : BaseDay
 {
@@ -41,7 +41,7 @@ public class Day04 : BaseDay
         }
 
         answer = wordCount.ToString();
-                
+
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 
@@ -56,7 +56,7 @@ public class Day04 : BaseDay
         // M . S
 
         int wordCount = 0;
-        
+
         var grid = GetGrid();
 
         int rowCount = grid.GetLength(0);
@@ -73,8 +73,8 @@ public class Day04 : BaseDay
                     char se = grid[row + 1, col + 1];
                     char nw = grid[row - 1, col - 1];
                     char sw = grid[row + 1, col - 1];
-                    
-                    if (((ne is 'M' && sw is 'S') || (ne is 'S' && sw is 'M')) && ((nw is 'M' && se is 'S') || (nw is 'S' && se is 'M')))
+
+                    if ((ne is 'M' && sw is 'S' || ne is 'S' && sw is 'M') && (nw is 'M' && se is 'S' || nw is 'S' && se is 'M'))
                     {
                         wordCount++;
                     }

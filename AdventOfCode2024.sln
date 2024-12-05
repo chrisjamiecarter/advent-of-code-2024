@@ -3,7 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2024.Console", "AdventOfCode2024.Console\AdventOfCode2024.Console.csproj", "{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2024", "src\AdventOfCode2024\AdventOfCode2024.csproj", "{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.DailyAssistant", "src\AdventOfCode2024.DailyAssistant\AdventOfCode.DailyAssistant.csproj", "{EA2FEA2D-595D-414A-AE68-BB436C15369B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4310503F-88EE-4A3E-B4EB-DECA34201543}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCB71F0D-43BB-49BC-9625-4D46ECB335FC}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +26,16 @@ Global
 		{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA2FEA2D-595D-414A-AE68-BB436C15369B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2FEA2D-595D-414A-AE68-BB436C15369B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2FEA2D-595D-414A-AE68-BB436C15369B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2FEA2D-595D-414A-AE68-BB436C15369B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2BBFE5E8-E94A-43A7-A7B8-156E6DBA020B} = {4310503F-88EE-4A3E-B4EB-DECA34201543}
+		{EA2FEA2D-595D-414A-AE68-BB436C15369B} = {4310503F-88EE-4A3E-B4EB-DECA34201543}
 	EndGlobalSection
 EndGlobal

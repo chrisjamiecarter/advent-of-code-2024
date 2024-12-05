@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using AoCHelper;
 
-namespace AdventOfCode2024.Console.Solutions;
+namespace AdventOfCode2024.Solutions;
 
 public class Day03 : BaseDay
 {
@@ -20,7 +20,7 @@ public class Day03 : BaseDay
         var sums = 0;
 
         var regex = new Regex(@"(?'operand'mul)\((?'numberone'\d+),(?'numbertwo'\d+)\)");
-        
+
         var matches = regex.Matches(_input);
         foreach (Match match in matches)
         {
@@ -37,14 +37,14 @@ public class Day03 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         var answer = "TODO";
-        
+
         ulong sums = 0;
 
         var strings = _input.Split("do()");
         foreach (var s in strings)
         {
             var doString = s.Split("don't()").First();
-            
+
             var regex = new Regex(@"(?'operand'mul)\((?'numberone'\d+),(?'numbertwo'\d+)\)");
 
             var matches = regex.Matches(doString);

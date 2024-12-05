@@ -1,6 +1,6 @@
 ﻿using AoCHelper;
 
-namespace AdventOfCode2024.Console.Solutions;
+namespace AdventOfCode2024.Solutions;
 
 public class Day02 : BaseDay
 {
@@ -20,7 +20,7 @@ public class Day02 : BaseDay
         foreach (var line in _input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
         {
             var numbers = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(x => Convert.ToInt32(x)).ToList();
-            
+
             var isAllIncreasing = IsAllIncreasing(numbers);
 
             var isAllDecreasing = IsAllDecreasing(numbers);
@@ -49,7 +49,7 @@ public class Day02 : BaseDay
             var isAllIncreasing = IsAllIncreasingWithProblemDampening(numbers);
 
             var isAllDecreasing = IsAllDecreasingWithProblemDampening(numbers);
-            
+
             if (isAllIncreasing || isAllDecreasing)
             {
                 safeReports++;

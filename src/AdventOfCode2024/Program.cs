@@ -1,6 +1,6 @@
 ﻿using AoCHelper;
 
-namespace AdventOfCode2024.Console;
+namespace AdventOfCode2024;
 
 internal class Program
 {
