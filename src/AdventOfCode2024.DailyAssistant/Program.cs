@@ -18,11 +18,21 @@ internal class Program
         string targetProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", $"{day}.md"));
         string targetSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Solutions", $"Day{day}.cs"));
 
-        File.Copy(sourceInputFilePath, targetInputFilePath, true);
-        File.Copy(sourceProblemFilePath, targetProblemFilePath, true);
+        if (!File.Exists(targetInputFilePath))
+        {
+            File.Copy(sourceInputFilePath, targetInputFilePath, true);
+        }
+        
+        if (!File.Exists(targetInputFilePath))
+        {
+            File.Copy(sourceProblemFilePath, targetProblemFilePath, true);
+        }
 
-        string solutionContent = File.ReadAllText(sourceSolutionFilePath);
-        solutionContent = solutionContent.Replace("Day00", $"Day{day}");
-        File.WriteAllText(targetSolutionFilePath, solutionContent);
+        if (!File.Exists(targetInputFilePath))
+        {
+            string solutionContent = File.ReadAllText(sourceSolutionFilePath);
+            solutionContent = solutionContent.Replace("Day00", $"Day{day}");
+            File.WriteAllText(targetSolutionFilePath, solutionContent);
+        }
     }
 }
