@@ -6,29 +6,29 @@ public class Day01 : BaseDay
 {
     private readonly string _input;
 
+    private readonly List<int> _left = [];
+    private readonly List<int> _right = [];
+
     public Day01()
     {
         _input = File.ReadAllText(InputFilePath);
-    }
-
-    public override ValueTask<string> Solve_1()
-    {
-        var answer = "TODO";
-
-        List<int> left = [];
-        List<int> right = [];
 
         foreach (var line in _input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
         {
             var numbers = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            left.Add(Convert.ToInt32(numbers.First()));
-            right.Add(Convert.ToInt32(numbers.Last()));
+            _left.Add(int.Parse(numbers.First()));
+            _right.Add(int.Parse(numbers.Last()));
         }
+    }
 
-        left.Sort();
-        right.Sort();
+    public override ValueTask<string> Solve_1()
+    {
+        var answer = string.Empty;
 
-        var differences = left.Zip(right, (x, y) => Math.Abs(x - y));
+        _left.Sort();
+        _right.Sort();
+
+        var differences = _left.Zip(_right, (x, y) => Math.Abs(x - y));
 
         answer = differences.Sum().ToString();
 
@@ -37,19 +37,9 @@ public class Day01 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = "TODO";
+        var answer = string.Empty;
 
-        List<int> left = [];
-        List<int> right = [];
-
-        foreach (var line in _input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
-        {
-            var numbers = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            left.Add(Convert.ToInt32(numbers.First()));
-            right.Add(Convert.ToInt32(numbers.Last()));
-        }
-
-        var similarityScores = left.Select(x => x * right.Count(y => x == y));
+        var similarityScores = _left.Select(x => x * _right.Count(y => x == y));
 
         answer = similarityScores.Sum().ToString();
 
