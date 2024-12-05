@@ -13,14 +13,22 @@ public class Day00 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var answer = "TODO";
+        var answer = string.Empty;
+        
+        // SOLVE.
+        
+        answer = "TODO";
                 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = "TODO";
+        var answer = string.Empty;
+
+        // SOLVE.
+
+        answer = "TODO";
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
