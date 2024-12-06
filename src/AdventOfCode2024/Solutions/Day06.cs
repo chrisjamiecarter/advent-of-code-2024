@@ -12,9 +12,9 @@ public class Day06 : BaseDay
 
     private readonly int _maxY;
 
-    private (int X, int Y) _position;
+    private (int X, int Y) _startPosition;
 
-    private (int X, int Y) _direction;
+    private (int X, int Y) _startDirection;
 
     public Day06()
     {
@@ -36,8 +36,8 @@ public class Day06 : BaseDay
                         grid[x, y] = -1;
                         break;
                     default:
-                        _position = (x, y);
-                        _direction = rows[y][x] switch
+                        _startPosition = (x, y);
+                        _startDirection = rows[y][x] switch
                         {
                             '^' => (0, -1),
                             '>' => (1, 0),
@@ -59,21 +59,21 @@ public class Day06 : BaseDay
     {
         var answer = string.Empty;
 
-        // SOLVE.
-
+        var currentPosition = _startPosition;
+        var currentDirection = _startDirection;
         while (true)
         {
-            (int X, int Y) nextPosition = MovePosition(_position, _direction);
+            (int X, int Y) nextPosition = MovePosition(currentPosition, currentDirection);
             if (nextPosition.X >= 0 && nextPosition.X < _maxX && nextPosition.Y >= 0 && nextPosition.Y < _maxY)
             {
                 if (_grid[nextPosition.X, nextPosition.Y] == -1)
                 {
-                    _direction = TurnToTheRight(_direction);
+                    currentDirection = TurnToTheRight(currentDirection);
                 }
                 else
                 {
-                    _position = nextPosition;
-                    _grid[_position.X, _position.Y]++;
+                    currentPosition = nextPosition;
+                    _grid[currentPosition.X, currentPosition.Y]++;
                 }
             }
             else
@@ -99,6 +99,73 @@ public class Day06 : BaseDay
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 
+    public override ValueTask<string> Solve_2()
+    {
+        var answer = string.Empty;
+
+        List<(int X, int Y)> distinctPositions = [];
+        for (int y = 0; y < _maxY; y++)
+        {
+            for (int x = 0; x < _maxX; x++)
+            {
+                if (_grid[x, y] > 0)
+                {
+                    if (_startPosition.X == x && _startPosition.Y == y)
+                    {
+                        _grid[x, y] = 1;
+                    }
+                    else
+                    {
+                        _grid[x, y] = 0;
+                        distinctPositions.Add((x, y));
+                    }
+                }
+            }
+        }
+
+        var infiniteLoops = 0;
+        foreach (var obstacle in distinctPositions)
+        {
+            var gridCopy = _grid.Clone() as int[,];
+
+            gridCopy[obstacle.X, obstacle.Y] = -1;
+
+            var currentPosition = _startPosition;
+            var currentDirection = _startDirection;
+            while (true)
+            {
+                (int X, int Y) nextPosition = MovePosition(currentPosition, currentDirection);
+                if (nextPosition.X >= 0 && nextPosition.X < _maxX && nextPosition.Y >= 0 && nextPosition.Y < _maxY)
+                {
+                    if (gridCopy[nextPosition.X, nextPosition.Y] == -1)
+                    {
+                        currentDirection = TurnToTheRight(currentDirection);
+                    }
+                    else
+                    {
+                        currentPosition = nextPosition;
+                        gridCopy[currentPosition.X, currentPosition.Y]++;
+                    }
+
+                    if (gridCopy[currentPosition.X, currentPosition.Y] > 4)
+                    {
+                        infiniteLoops++;
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        }
+
+        answer = infiniteLoops.ToString();
+
+        return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
+    }
+
     private (int X, int Y) MovePosition((int X, int Y) position, (int X, int Y) direction)
     {
         return (position.X + direction.X, position.Y + direction.Y);
@@ -113,16 +180,5 @@ public class Day06 : BaseDay
             (0, 1) => (-1, 0),
             _ => (0, -1),
         };
-    }
-
-    public override ValueTask<string> Solve_2()
-    {
-        var answer = string.Empty;
-
-        // SOLVE.
-
-        answer = "TODO";
-
-        return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 }
