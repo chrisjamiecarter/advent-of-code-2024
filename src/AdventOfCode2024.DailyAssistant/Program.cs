@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
 
 namespace AdventOfCode.DailyAssistant;
 
@@ -6,33 +6,50 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        string day = DateTime.Now.Day.ToString("D2");
-
-        string sourceDirectoryPath = "..\\..\\..\\..\\AdventOfCode2024";
-
-        string sourceInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", "00.txt"));
-        string sourceProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", "00.md"));
-        string sourceSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Solutions", "Day00.cs"));
-
-        string targetInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", $"{day}.txt"));
-        string targetProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", $"{day}.md"));
-        string targetSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Solutions", $"Day{day}.cs"));
-
-        if (!File.Exists(targetInputFilePath))
+        try
         {
-            File.Copy(sourceInputFilePath, targetInputFilePath, true);
+            string day = DateTime.Now.Day.ToString("D2");
+
+            Console.WriteLine($"Processing day: {day}");
+
+            string sourceDirectoryPath = "..\\..\\..\\..\\AdventOfCode2024";
+
+            string sourceInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", "00.txt"));
+            string sourceProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", "00.md"));
+            string sourceSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Solutions", "Day00.cs"));
+
+            string targetInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", $"{day}.txt"));
+            string targetProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", $"{day}.md"));
+            string targetSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Solutions", $"Day{day}.cs"));
+
+            if (!File.Exists(targetInputFilePath))
+            {
+                File.Copy(sourceInputFilePath, targetInputFilePath, true);
+                Console.WriteLine($"Created: {Path.GetFileName(targetInputFilePath)}");
+            }
+
+            if (!File.Exists(targetProblemFilePath))
+            {
+                File.Copy(sourceProblemFilePath, targetProblemFilePath, true);
+                Console.WriteLine($"Created: {Path.GetFileName(targetProblemFilePath)}");
+            }
+
+            if (!File.Exists(targetSolutionFilePath))
+            {
+                string solutionContent = File.ReadAllText(sourceSolutionFilePath);
+                solutionContent = solutionContent.Replace("Day00", $"Day{day}");
+                File.WriteAllText(targetSolutionFilePath, solutionContent);
+                Console.WriteLine($"Created: {Path.GetFileName(targetSolutionFilePath)}");
+            }
         }
-        
-        if (!File.Exists(targetInputFilePath))
+        catch (Exception exception)
         {
-            File.Copy(sourceProblemFilePath, targetProblemFilePath, true);
+            Console.WriteLine(exception.Message);
         }
-
-        if (!File.Exists(targetInputFilePath))
+        finally
         {
-            string solutionContent = File.ReadAllText(sourceSolutionFilePath);
-            solutionContent = solutionContent.Replace("Day00", $"Day{day}");
-            File.WriteAllText(targetSolutionFilePath, solutionContent);
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }
