@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AdventOfCode.DailyAssistant;
+﻿namespace AdventOfCode.DailyAssistant;
 
 internal class Program
 {
@@ -12,7 +10,7 @@ internal class Program
 
             Console.WriteLine($"Processing day: {day}");
 
-            string sourceDirectoryPath = "..\\..\\..\\..\\AdventOfCode2024";
+            string sourceDirectoryPath = "C:\\DEV\\personal\\advent-of-code-2024\\src\\AdventOfCode2024";
 
             string sourceInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", "00.txt"));
             string sourceProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", "00.md"));
