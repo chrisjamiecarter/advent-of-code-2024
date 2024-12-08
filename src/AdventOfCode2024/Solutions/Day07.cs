@@ -37,12 +37,11 @@ public class Day07 : BaseDay
 
         foreach (var equation in _equations)
         {
-            if (CanMatchTarget(equation))
+            if (Evaluate(equation.TargetValue, equation.Operands, equation.Operands[0], 1))
             {
                 totalCalibrationResult += equation.TargetValue;
             }
         }
-
 
         answer = totalCalibrationResult.ToString();
 
@@ -53,16 +52,19 @@ public class Day07 : BaseDay
     {
         var answer = string.Empty;
 
-        // SOLVE.
+        long totalCalibrationResult = 0;
 
-        answer = "TODO";
+        foreach (var equation in _equations)
+        {
+            if (EvaluateWithConcatenation(equation.TargetValue, equation.Operands, equation.Operands[0], 1))
+            {
+                totalCalibrationResult += equation.TargetValue;
+            }
+        }
+
+        answer = totalCalibrationResult.ToString();
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
-    }
-
-    private static bool CanMatchTarget((long TargetValue, List<long> Operands) equation)
-    {
-        return Evaluate(equation.TargetValue, equation.Operands, equation.Operands[0], 1);
     }
 
     private static bool Evaluate(long targetValue, List<long> operands, long currentValue, int index)
@@ -78,6 +80,31 @@ public class Day07 : BaseDay
         }
 
         if (Evaluate(targetValue, operands, currentValue * operands[index], index + 1))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool EvaluateWithConcatenation(long targetValue, List<long> operands, long currentValue, int index)
+    {
+        if (index == operands.Count)
+        {
+            return targetValue == currentValue;
+        }
+
+        if (EvaluateWithConcatenation(targetValue, operands, currentValue + operands[index], index + 1))
+        {
+            return true;
+        }
+
+        if (EvaluateWithConcatenation(targetValue, operands, currentValue * operands[index], index + 1))
+        {
+            return true;
+        }
+
+        if (EvaluateWithConcatenation(targetValue, operands, long.Parse($"{currentValue}{operands[index]}"), index + 1))
         {
             return true;
         }
