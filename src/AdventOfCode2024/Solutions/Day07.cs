@@ -6,7 +6,7 @@ public class Day07 : BaseDay
 {
     private readonly string _input;
 
-    private readonly List<(int TargetValue, List<int> Operands)> _equations = [];
+    private readonly List<(long TargetValue, List<long> Operands)> _equations = [];
 
     private readonly string[] operators = ["*", "+"];
 
@@ -17,12 +17,12 @@ public class Day07 : BaseDay
         foreach (string equation in _input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             var parts = equation.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            var targetValue = int.Parse(parts.First());
-            var operands = new List<int>();
+            var targetValue = long.Parse(parts.First());
+            var operands = new List<long>();
 
             foreach (string operand in parts.Last().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
-                operands.Add(int.Parse(operand));
+                operands.Add(long.Parse(operand));
             }
 
             _equations.Add((targetValue, operands));
@@ -33,18 +33,18 @@ public class Day07 : BaseDay
     {
         var answer = string.Empty;
 
+        long totalCalibrationResult = 0;
+
         foreach (var equation in _equations)
         {
-            var testValues = new List<int>();
-
-            // just adds
-            // just muliplications
-            // al
-
+            if (CanMatchTarget(equation))
+            {
+                totalCalibrationResult += equation.TargetValue;
+            }
         }
 
 
-        answer = "TODO";
+        answer = totalCalibrationResult.ToString();
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
@@ -58,5 +58,30 @@ public class Day07 : BaseDay
         answer = "TODO";
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
+    }
+
+    private static bool CanMatchTarget((long TargetValue, List<long> Operands) equation)
+    {
+        return Evaluate(equation.TargetValue, equation.Operands, equation.Operands[0], 1);
+    }
+
+    private static bool Evaluate(long targetValue, List<long> operands, long currentValue, int index)
+    {
+        if (index == operands.Count)
+        {
+            return targetValue == currentValue;
+        }
+
+        if (Evaluate(targetValue, operands, currentValue + operands[index], index + 1))
+        {
+            return true;
+        }
+
+        if (Evaluate(targetValue, operands, currentValue * operands[index], index + 1))
+        {
+            return true;
+        }
+
+        return false;
     }
 }
