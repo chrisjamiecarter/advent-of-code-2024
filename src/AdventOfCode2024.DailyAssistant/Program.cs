@@ -44,10 +44,5 @@ internal class Program
         {
             Console.WriteLine(exception.Message);
         }
-        finally
-        {
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-        }
     }
 }
