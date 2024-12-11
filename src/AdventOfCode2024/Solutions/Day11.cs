@@ -6,16 +6,22 @@ public class Day11 : BaseDay
 {
     private readonly string _input;
 
-    private readonly ulong[] _numbers;
+    private readonly Dictionary<ulong, ulong> _stones = [];
+    private readonly Dictionary<ulong, List<ulong>> _cache = [];
 
     public Day11()
     {
         _input = File.ReadAllText(InputFilePath);
-        _numbers = _input.Split(' ').Select(ulong.Parse).ToArray();
+
+        foreach(var stone in _input.Split(' ').Select(ulong.Parse))
+        {
+            _stones.Add(stone, 1UL);
+        }
     }
 
     public override ValueTask<string> Solve_1()
     {
+        _cache.Clear();
         var answer = PerformBlinks(25);
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
@@ -23,7 +29,7 @@ public class Day11 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        // TODO: This takes far too long and is way too memory intensive. I may need to seek help.
+        _cache.Clear();
         var answer = PerformBlinks(75);
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
@@ -31,37 +37,53 @@ public class Day11 : BaseDay
 
     private string PerformBlinks(int blinks)
     {
-        var numbers = new List<ulong>(_numbers);
+        Dictionary<ulong, ulong> stones = _stones.ToDictionary();
+
         for (int i = 0; i < blinks; i++)
         {
-            var nextNumbers = new List<ulong>(numbers.Count * 2);
-            Parallel.ForEach(numbers, number =>
+            Dictionary<ulong, ulong> stonesSnapshot = [];
+            foreach (var stone in stones.Keys)
             {
-                lock (nextNumbers) nextNumbers.AddRange(Blink(number));
-            });
-            //foreach (var number in numbers)
-            //{
-            //    nextNumbers.AddRange(Blink(number));
-            //}
-            numbers = nextNumbers;
+                var multiplier = stones[stone];
+                foreach (var newStone in Blink(stone))
+                {
+                    if (!stonesSnapshot.TryAdd(newStone, multiplier))
+                    {
+                        stonesSnapshot[newStone] += multiplier;
+                    }
+                }
+            }
+            stones = stonesSnapshot;
         }
-        return numbers.Count.ToString();
+
+        var answer = 0UL;
+        foreach (var stone in stones.Keys)
+        {
+            answer += stones[stone];
+        }    
+
+        return answer.ToString();
     }
 
-    private static IEnumerable<ulong> Blink(ulong number)
+    private List<ulong> Blink(ulong engraving)
     {
-        if (number == 0)
+        if (_cache.TryGetValue(engraving, out List<ulong>? value))
+        {
+            return value;
+        }
+
+        if (engraving == 0)
         {
             return [1UL];
         }
 
-        var numberOfDigits = Math.Floor(Math.Log10(number)) + 1;
+        var numberOfDigits = Math.Floor(Math.Log10(engraving)) + 1;
         if (numberOfDigits % 2 == 0)
         {
             ulong divisor = (ulong)Math.Pow(10, numberOfDigits / 2);
-            return [number / divisor, number % divisor];
+            return [engraving / divisor, engraving % divisor];
         }
 
-        return [number * 2024];
+        return [engraving * 2024];
     }
 }
