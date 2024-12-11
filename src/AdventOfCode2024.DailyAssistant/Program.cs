@@ -14,7 +14,7 @@ internal class Program
 
             string sourceInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Template", "00.txt"));
             string sourceProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Template", "00.md"));
-            string sourceSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Template", "Day00.cs"));
+            string sourceSolutionFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Template", "Day00.txt"));
 
             string targetInputFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Inputs", $"{day}.txt"));
             string targetProblemFilePath = Path.GetFullPath(Path.Combine(sourceDirectoryPath, "Problems", $"{day}.md"));
@@ -35,7 +35,6 @@ internal class Program
             if (!File.Exists(targetSolutionFilePath))
             {
                 string solutionContent = File.ReadAllText(sourceSolutionFilePath);
-                solutionContent = solutionContent.Replace("AdventOfCode2024.Template", "AdventOfCode2024.Solutions");
                 solutionContent = solutionContent.Replace("Day00", $"Day{day}");
                 File.WriteAllText(targetSolutionFilePath, solutionContent);
                 Console.WriteLine($"Created: {Path.GetFileName(targetSolutionFilePath)}");
