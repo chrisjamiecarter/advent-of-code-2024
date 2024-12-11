@@ -16,37 +16,43 @@ public class Day11 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var answer = string.Empty;
-
-        // SOLVE.
-        var numbers = _numbers.ToArray();
-
-        for (int i = 0; i < 25; i++)
-        {
-            numbers = numbers.SelectMany(Blink).ToArray();
-        }
-
-        answer = numbers.Length.ToString();
+        var answer = PerformBlinks(25);
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = string.Empty;
-
-        // SOLVE.
-
-        answer = "TODO";
+        // TODO: This takes far too long and is way too memory intensive. I may need to seek help.
+        var answer = PerformBlinks(75);
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 
-    private static ulong[] Blink(ulong number)
+    private string PerformBlinks(int blinks)
+    {
+        var numbers = new List<ulong>(_numbers);
+        for (int i = 0; i < blinks; i++)
+        {
+            var nextNumbers = new List<ulong>(numbers.Count * 2);
+            Parallel.ForEach(numbers, number =>
+            {
+                lock (nextNumbers) nextNumbers.AddRange(Blink(number));
+            });
+            //foreach (var number in numbers)
+            //{
+            //    nextNumbers.AddRange(Blink(number));
+            //}
+            numbers = nextNumbers;
+        }
+        return numbers.Count.ToString();
+    }
+
+    private static IEnumerable<ulong> Blink(ulong number)
     {
         if (number == 0)
         {
-            return [1];
+            return [1UL];
         }
 
         var numberOfDigits = Math.Floor(Math.Log10(number)) + 1;
