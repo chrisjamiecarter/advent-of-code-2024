@@ -11,19 +11,18 @@ public class Day09 : BaseDay
         _input = File.ReadAllText(InputFilePath);
     }
 
-    private List<int?> GetFileMap()
+    private List<int> GetFileMap()
     {
-        List<int?> fileMap = [];
+        List<int> fileMap = [];
 
-        var index = 0;
-        for (int i = 0; i < _input.Length; i++)
+        for (int i = 0, id = 0; i < _input.Length; i++)
         {
             var length = int.Parse(_input[i].ToString());
-            int? value = null;
+            int value = -1;
             if (i % 2 == 0)
             {
-                value = index;
-                index++;
+                value = id;
+                id++;
             }
 
             for (int j = 0; j < length; j++)
@@ -40,30 +39,28 @@ public class Day09 : BaseDay
         var answer = string.Empty;
 
         var fileMap = GetFileMap();
+        var freeSpaceIndex = 0;
 
-        // SOLVE.
-        var nulls = fileMap.Count(x => !x.HasValue);
-        for (int i = 0; i < nulls; i++)
+        for (int i = fileMap.Count - 1; i >= 0; i--)
         {
-            var firstIndex = fileMap.FindIndex(x => !x.HasValue);
-            var lastIndex = fileMap.FindLastIndex(x => x.HasValue);
-            int? firstValue = fileMap[firstIndex];
-            int? lastValue = fileMap[lastIndex];
-            fileMap[firstIndex] = lastValue;
-            fileMap[lastIndex] = firstValue;
+            if (fileMap[i] >= 0)
+            {
+                freeSpaceIndex = GetFirstFreeSpaceIndex(fileMap, freeSpaceIndex, i);
+
+                if (freeSpaceIndex < 0)
+                {
+                    break;
+                }
+
+                fileMap[freeSpaceIndex] = fileMap[i];
+                fileMap[i] = -1;
+            }
         }
 
         ulong filesystemChecksum = 0;
-        for (int i = 0; i < fileMap.Count; i++)
+        for (int i = 0; fileMap[i] >= 0; i++)
         {
-            if (fileMap[i].HasValue)
-            {
-                filesystemChecksum += (ulong)(i * fileMap[i]!.Value);
-            }
-            else
-            {
-                break;
-            }
+            filesystemChecksum += (ulong)(i * fileMap[i]);
         }
 
         answer = filesystemChecksum.ToString();
@@ -76,83 +73,93 @@ public class Day09 : BaseDay
         var answer = string.Empty;
 
         var fileMap = GetFileMap();
+        var firstEmptyBlockIndex = 0;
 
-        // SOLVE.
-        for (int i = fileMap.Count - 1; i >= 0; i--)
+        for (int i = fileMap.Count - 1, id = int.MaxValue; i >= 0; i--)
         {
-            if (fileMap[i].HasValue)
+            if (fileMap[i] >= 0 && fileMap[i] < id)
             {
-                int compare = fileMap[i]!.Value;
-                List<int> firstIndexes = [];
-                List<int> lastIndexes = [];
-                int tempIndex = i;
-                while (tempIndex >= 0 && fileMap[tempIndex].HasValue && fileMap[tempIndex]!.Value == compare)
+                var fileStartIndex = i;
+                for (var j = i; j >= 0 && fileMap[j] == fileMap[i]; j--)
                 {
-                    lastIndexes.Add(tempIndex);
-                    tempIndex--;
-                    i = tempIndex + 1;
+                    fileStartIndex = j;
                 }
 
-                if (!lastIndexes.Any())
-                {
-                    continue;
-                }
+                var length = i - fileStartIndex + 1;
+                id = fileMap[i];
 
-                List<int> compareIndexes = [];
-                for (int j = 0; j < fileMap.Count; j++)
+                var (FreeSpaceIndex, FirstEmptyBlockIndex) = GetFirstFreeSpaceIndex(fileMap, firstEmptyBlockIndex, i, length);
+                var freeSpaceIndex = FreeSpaceIndex;
+                firstEmptyBlockIndex = FirstEmptyBlockIndex;
+                if (freeSpaceIndex >= 0)
                 {
-                    if (j > i)
+                    for (var j = 0; j < length; j++)
                     {
-                        compareIndexes = [];
-                        break;
-                    }
-
-                    if (!fileMap[j].HasValue)
-                    {
-                        compareIndexes.Add(j);
-                    }
-                    else
-                    {
-                        if (lastIndexes.Count <= compareIndexes.Count)
-                        {
-                            firstIndexes = compareIndexes;
-                            break;
-                        }
-                        else
-                        {
-                            compareIndexes = [];
-                        }    
+                        fileMap[freeSpaceIndex + j] = fileMap[i];
+                        fileMap[fileStartIndex + j] = -1;
                     }
                 }
 
-                if (!firstIndexes.Any())
-                {
-                    continue;
-                }
-
-                for (int k = 0; k < lastIndexes.Count; k++)
-                {
-                    var firstIndex = firstIndexes[k];
-                    var lastIndex = lastIndexes[k];
-                    int? firstValue = fileMap[firstIndex];
-                    int? lastValue = fileMap[lastIndex];
-                    fileMap[firstIndex] = lastValue;
-                    fileMap[lastIndex] = firstValue;
-                }
+                i = fileStartIndex;
             }
         }
 
         ulong filesystemChecksum = 0;
         for (int i = 0; i < fileMap.Count; i++)
         {
-            if (fileMap[i].HasValue)
+            if (fileMap[i] >= 0)
             {
-                filesystemChecksum += (ulong)(i * fileMap[i]!.Value);
+                filesystemChecksum += (ulong)(i * fileMap[i]);
             }
         }
 
         answer = filesystemChecksum.ToString();
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
+    }
+
+    private static int GetFirstFreeSpaceIndex(List<int> fileMap, int freeSpaceIndex, int maxIndex)
+    {
+        for (int i = freeSpaceIndex; i < maxIndex; i++)
+        {
+            if (fileMap[i] == -1)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static (int FirstFreeSpaceIndex, int FirstEmptyBlockIndex) GetFirstFreeSpaceIndex(List<int> fileMap, int firstEmptyBlockIndex, int maxIndex, int length)
+    {
+        var firstEmptyBlockFound = false;
+        for (int i = firstEmptyBlockIndex; i < maxIndex; i++)
+        {
+            if(fileMap[i] == -1)
+            {
+                if (!firstEmptyBlockFound)
+                {
+                    firstEmptyBlockFound = true;
+                    firstEmptyBlockIndex = i;
+                }
+
+                var doesFileFit = true;
+                for (int j = 0; j < length; j++)
+                {
+                    if (fileMap[i + j] >= 0)
+                    {
+                        doesFileFit = false;
+                    }
+                }
+
+                if (doesFileFit)
+                {
+                    return (i, firstEmptyBlockIndex);
+                }
+            }
+        }
+
+        return (-1, firstEmptyBlockIndex);
     }
 }
