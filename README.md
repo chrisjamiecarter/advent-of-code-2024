@@ -29,7 +29,8 @@ Each day's challenge has it's own problem, input and solution file.
 
 ## Feedback and Contributions
 This is a personal project, but feel free to explore, fork, and share your thoughts via issues or pull requests.
-Acknowledgments
+
+## Acknowledgments
 
 - Thanks to [Eric Wastl](https://x.com/ericwastl) for creating Advent of Code!
 - Thank to [AocHelper](https://github.com/eduherminio/AoCHelper) for the support library.
