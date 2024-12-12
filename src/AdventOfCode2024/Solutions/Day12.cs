@@ -1,3 +1,4 @@
+using System.Security;
 using AoCHelper;
 using Spectre.Console;
 
@@ -45,48 +46,18 @@ public class Day12 : BaseDay
         var answer = string.Empty;
 
         // SOLVE.
-        Dictionary<char, (int Area, int Perimeter)> plantRegions = [];
+        var visitedPlots = new bool[_maxX, _maxY];
+        var fencingCost = 0;
 
         for (int y = 0; y < _maxY; y++)
         {
             for (int x = 0; x < _maxX; x++)
             {
-                char plant = _grid[x, y];
-                int perimeter = 0;
-                foreach (var direction in _directions)
+                if (!visitedPlots[x, y])
                 {
-                    var checkX = x + direction.X;
-                    var checkY = y + direction.Y;
-
-                    if (checkX < 0 || checkX >= _maxX || checkY < 0 || checkY >= _maxY)
-                    {
-                        perimeter++;
-                    }
-                    else //else if (checkX > 0 && checkX < _maxX && checkY > 0 && checkY < _maxY)
-                    {
-                        if (_grid[checkX, checkY] != plant)
-                        {
-                            perimeter++;
-                        }
-                    }
+                    fencingCost += ProcessRegion(x, y, visitedPlots);
                 }
-
-                if (!plantRegions.TryAdd(plant, (1, perimeter)))
-                {
-                    var region = plantRegions[plant];
-                    region.Area++;
-                    region.Perimeter += perimeter;
-                    plantRegions[plant] = region;
-                }
-
             }
-        }
-
-        var fencingCost = 0;
-        foreach (var region in plantRegions.Values)
-        {
-            fencingCost += region.Area * region.Perimeter;
-
         }
 
         answer = fencingCost.ToString();
@@ -104,4 +75,53 @@ public class Day12 : BaseDay
 
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
+
+    private int ProcessRegion(int startX, int startY, bool[,] visitedPlots)
+    {
+        List<(int X, int Y)> regionPlots = [(startX, startY)];
+        int perimeter = 0;
+
+        visitedPlots[startX, startY] = true;
+        perimeter = ExplorePerimeter(startX, startY, visitedPlots, regionPlots, perimeter);
+
+        return regionPlots.Count * perimeter;
+    }
+
+    private int ExplorePerimeter(int x, int y, bool[,] visitedPlots, List<(int X, int Y)> regionPlots, int perimeter)
+    {
+        foreach (var direction in _directions)
+        {
+            int exploreX = x + direction.X;
+            int exploreY = y + direction.Y;
+
+            if (IsWithinBounds(exploreX, exploreY))
+            {
+                if (_grid[exploreX, exploreY] == _grid[x, y])
+                {
+                    if (!visitedPlots[exploreX, exploreY])
+                    {
+                        visitedPlots[exploreX, exploreY] = true;
+                        regionPlots.Add((exploreX, exploreY));
+                        perimeter = ExplorePerimeter(exploreX, exploreY, visitedPlots, regionPlots, perimeter);
+                    }
+                }
+                else
+                {
+                    perimeter++;
+                }
+            }
+            else
+            {
+                perimeter++;
+            }
+        }
+
+        return perimeter;
+    }
+
+    private bool IsWithinBounds(int x, int y)
+    {
+        return x >= 0 && x < _maxX && y >= 0 && y < _maxY;
+    }
+
 }
