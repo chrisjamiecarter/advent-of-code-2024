@@ -43,7 +43,27 @@ public class Day08 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = "TODO";
+        var antennas = ParseAntennas(_input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        var antinodes = new HashSet<(int x, int y)>();
+
+        foreach (var (key, positions) in antennas)
+        {
+            foreach (var (x, y) in positions)
+            {
+                foreach (var (prevX, prevY) in positions)
+                {
+                    if ((x, y) == (prevX, prevY)) continue;
+
+                    var dX = x - prevX;
+                    var dY = y - prevY;
+
+                    TraceAntinodes(antinodes, x,  y, dX, dY);
+                    TraceAntinodes(antinodes, prevX, prevY, -dX, -dY);
+                }
+            }
+        }
+
+        var answer = antinodes.Count;
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 
@@ -78,6 +98,16 @@ public class Day08 : BaseDay
         if (IsWithinRange(x, y))
         {
             antinodes.Add((x, y));
+        }
+    }
+
+    private void TraceAntinodes(HashSet<(int x, int y)> antinodes, int x, int y, int dX, int dY)
+    {
+        while (IsWithinRange(x, y))
+        {
+            antinodes.Add((x, y));
+            x += dX;
+            y += dY;
         }
     }
 
