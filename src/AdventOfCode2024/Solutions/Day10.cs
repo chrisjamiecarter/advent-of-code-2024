@@ -42,7 +42,22 @@ public class Day10 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = "TODO";
+        var grid = ParseInputToGrid(_input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+        var rating = 0;
+
+        for (int y = 0; y < _maxY; y++)
+        {
+            for (int x = 0; x < _maxX; x++)
+            {
+                if (grid[x, y] == '0')
+                {
+                    rating += Walk(grid, x, y, null, false);
+                }
+            }
+        }
+
+        var answer = rating;
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 
