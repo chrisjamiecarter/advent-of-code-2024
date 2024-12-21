@@ -21,7 +21,7 @@ public class Day13 : BaseDay
             var a = ParseLine(lines[i], 12, " Y+");
             var b = ParseLine(lines[i + 1], 12, " Y+");
             var prize = ParseLine(lines[i + 2], 9, " Y=");
-            
+
             var outcomesA = CalculateOutcomes(a, prize);
             var outcomesB = CalculateOutcomes(b, prize);
 
@@ -36,29 +36,45 @@ public class Day13 : BaseDay
                 }
             }
         }
-                
+
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 1 = '{answer}'");
     }
 
     public override ValueTask<string> Solve_2()
     {
-        var answer = string.Empty;
+        var lines = _input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        // SOLVE.
+        long answer = 0;
+        for (int i = 0; i < lines.Length; i += 3)
+        {
+            var a = ParseLine(lines[i], 12, " Y+");
+            var b = ParseLine(lines[i + 1], 12, " Y+");
+            var prize = ParseLine(lines[i + 2], 9, " Y=");
 
-        answer = "TODO";
+            for (var j = 0; j < prize.Length; j++)
+            {
+                prize[j] += 10_000_000_000_000;
+            }
 
+            double outcomesA = (prize[1] - (b[1] * prize[0] / b[0])) / (a[1] - (b[1] * a[0] / b[0]));
+            double outcomesB = (prize[0] - (outcomesA * a[0])) / b[0];
+
+            if (outcomesA > 0 && outcomesB > 0 && Math.Round(outcomesA, 2) == Math.Round(outcomesA, 0) && Math.Round(outcomesB, 2) == Math.Round(outcomesB, 0))
+            {
+                answer += (long)Math.Round(outcomesA, 0) * 3 + (long)Math.Round(outcomesB, 0);
+            }
+        }
         return new($"Solution to {ClassPrefix} {CalculateIndex()}, part 2 = '{answer}'");
     }
 
-    private static List<(int, int)> CalculateOutcomes(int[] values, int[] prize)
+    private static List<(double, double)> CalculateOutcomes(double[] values, double[] prize)
     {
-        var outcomes = new List<(int, int)>();
+        var outcomes = new List<(double, double)>();
 
         for (int push = 0; push <= 100; push++)
         {
-            int x = values[0] * push;
-            int y = values[1] * push;
+            double x = values[0] * push;
+            double y = values[1] * push;
             if (x <= prize[0] && y <= prize[1])
             {
                 outcomes.Add((x, y));
@@ -68,8 +84,8 @@ public class Day13 : BaseDay
         return outcomes;
     }
 
-    private static int[] ParseLine(string line, int index, string replace)
+    private static double[] ParseLine(string line, int index, string replace)
     {
-        return line[index..].Replace(replace, string.Empty).Split(',').Select(double.Parse).Select(d => (int)d).ToArray();
+        return line[index..].Replace(replace, string.Empty).Split(',').Select(double.Parse).ToArray();
     }
 }
